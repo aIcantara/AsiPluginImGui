@@ -10,7 +10,7 @@ public:
   CRender();
   ~CRender();
 
-  bool changeWindowState();
+  bool toggleWindow();
 private:
   bool window = false;
 
@@ -26,6 +26,6 @@ private:
   void onReset(const decltype(hookReset)& hook, HRESULT& returnValue, IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* parameters);
 };
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 #endif // RENDER_H

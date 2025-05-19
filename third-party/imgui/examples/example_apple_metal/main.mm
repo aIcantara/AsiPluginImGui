@@ -129,7 +129,7 @@
     if (renderPassDescriptor == nil)
     {
         [commandBuffer commit];
-		return;
+        return;
     }
 
     // Start the Dear ImGui frame
@@ -192,7 +192,7 @@
     [renderEncoder popDebugGroup];
     [renderEncoder endEncoding];
 
-	// Present
+    // Present
     [commandBuffer presentDrawable:view.currentDrawable];
     [commandBuffer commit];
 }
@@ -319,9 +319,20 @@
 
 #if TARGET_OS_OSX
 
-int main(int argc, const char * argv[])
+int main(int, const char**)
 {
-    return NSApplicationMain(argc, argv);
+    @autoreleasepool
+    {
+        [NSApplication sharedApplication];
+        [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+
+        AppDelegate *appDelegate = [[AppDelegate alloc] init];   // creates window
+        [NSApp setDelegate:appDelegate];
+
+        [NSApp activateIgnoringOtherApps:YES];
+        [NSApp run];
+    }
+    return 0;
 }
 
 #else

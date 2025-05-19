@@ -23,7 +23,7 @@ CRender::~CRender() {
   }
 }
 
-bool CRender::changeWindowState() {
+bool CRender::toggleWindow() {
   window = !window;
   pauseScreen(window);
   ImGui::GetIO().MouseDrawCursor = window;

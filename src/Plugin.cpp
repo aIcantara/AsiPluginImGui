@@ -36,14 +36,14 @@ void CPlugin::gameLoop(const decltype(hookGameLoop)& hook) {
   return hook.get_trampoline()();
 }
 
-HRESULT CPlugin::wndProc(const decltype(hookWndProc)& hook, HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+HRESULT CPlugin::wndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   if (uMsg == WM_KEYDOWN) {
     if (wParam == VK_F9 && (HIWORD(lParam) & KF_REPEAT) != KF_REPEAT)
-      render.changeWindowState();
+      render.toggleWindow();
   }
 
-  if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam))
+  if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
     return 1;
 
-  return hook.get_trampoline()(hwnd, uMsg, wParam, lParam);
+  return hook.get_trampoline()(hWnd, uMsg, wParam, lParam);
 }
