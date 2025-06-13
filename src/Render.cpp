@@ -1,16 +1,21 @@
 #include "Render.h"
+
 #include <imgui_impl_dx9.h>
 #include <imgui_impl_win32.h>
 
 kthook::kthook_signal<HWND(__cdecl*)(HINSTANCE)> hookGameInstanceInit{ 0x745560 };
 
-HWND gameHwnd = []() {
+HWND gameHwnd = []()
+{
     HWND* hwndPtr = *reinterpret_cast<HWND**>(0xC17054);
-    if (hwndPtr != nullptr) {
+    if (hwndPtr != nullptr)
+    {
         return *hwndPtr;
     }
-    else {
-        hookGameInstanceInit.after += [](const auto& hook, HWND& returnValue, HINSTANCE inst) {
+    else
+    {
+        hookGameInstanceInit.after += [](const auto& hook, HWND& returnValue, HINSTANCE inst)
+        {
             gameHwnd = returnValue;
         };
 
@@ -18,7 +23,8 @@ HWND gameHwnd = []() {
     }
 }();
 
-CRender::CRender() {
+CRender::CRender()
+{
     using namespace std::placeholders;
 
     hookPresent.before += std::bind(&CRender::onPresent, this, _1, _2, _3, _4, _5, _6);
@@ -29,7 +35,8 @@ CRender::CRender() {
     hookReset.install();
 }
 
-CRender::~CRender() {
+CRender::~CRender()
+{
     if (!ImGui::GetCurrentContext())
         return;
         
@@ -38,7 +45,8 @@ CRender::~CRender() {
     ImGui::DestroyContext();
 }
 
-bool CRender::toggleWindow() {
+bool CRender::toggleWindow()
+{
     window = !window;
     pauseScreen(window);
     ImGui::GetIO().MouseDrawCursor = window;
@@ -46,10 +54,12 @@ bool CRender::toggleWindow() {
     return window;
 }
 
-void CRender::pauseScreen(bool state) {
+void CRender::pauseScreen(bool state)
+{
     static DWORD updateMouseProtection, rsMouseSetPosProtFirst, rsMouseSetPosProtSecond;
 
-    if (state) {
+    if (state)
+    {
         ::VirtualProtect(reinterpret_cast<void*>(0x53F3C6U), 5U, PAGE_EXECUTE_READWRITE, &updateMouseProtection);
         ::VirtualProtect(reinterpret_cast<void*>(0x53E9F1U), 5U, PAGE_EXECUTE_READWRITE, &rsMouseSetPosProtFirst);
         ::VirtualProtect(reinterpret_cast<void*>(0x748A1BU), 5U, PAGE_EXECUTE_READWRITE, &rsMouseSetPosProtSecond);
@@ -60,7 +70,8 @@ void CRender::pauseScreen(bool state) {
         memset(reinterpret_cast<void*>(0x53E9F1U), 0x90, 5U);
         memset(reinterpret_cast<void*>(0x748A1BU), 0x90, 5U);
     }
-    else {
+    else
+    {
         memcpy(reinterpret_cast<void*>(0x53F3C6U), "\xE8\x95\x6C\x20\x00", 5U);
         memcpy(reinterpret_cast<void*>(0x53E9F1U), "\xE8\xAA\xAA\x0D\x00", 5U);
         memcpy(reinterpret_cast<void*>(0x748A1BU), "\xE8\x80\x0A\xED\xFF", 5U);
@@ -74,17 +85,21 @@ void CRender::pauseScreen(bool state) {
     }
 }
 
-std::uintptr_t CRender::findDevice(std::uint32_t length) {
-    static std::uintptr_t base = [](std::size_t length) {
+std::uintptr_t CRender::findDevice(std::uint32_t length)
+{
+    static std::uintptr_t base = [](std::size_t length)
+    {
         std::string pathTo(MAX_PATH, '\0');
 
-        if (auto size = GetSystemDirectoryA(pathTo.data(), MAX_PATH)) {
+        if (auto size = GetSystemDirectoryA(pathTo.data(), MAX_PATH))
+        {
             pathTo.resize(size);
             pathTo += "\\d3d9.dll";
 
             std::uintptr_t dwObjBase = reinterpret_cast<std::uintptr_t>(LoadLibraryA(pathTo.c_str()));
 
-            while (dwObjBase++ < dwObjBase + length) {
+            while (dwObjBase++ < dwObjBase + length)
+            {
                 if (*reinterpret_cast<std::uint16_t*>(dwObjBase + 0x00) == 0x06C7 &&
                     *reinterpret_cast<std::uint16_t*>(dwObjBase + 0x06) == 0x8689 &&
                     *reinterpret_cast<std::uint16_t*>(dwObjBase + 0x0C) == 0x8689) {
@@ -102,13 +117,16 @@ std::uintptr_t CRender::findDevice(std::uint32_t length) {
     return base;
 }
 
-void* CRender::getFunctionAddress(int VTableIndex) {
+void* CRender::getFunctionAddress(int VTableIndex)
+{
     return (*reinterpret_cast<void***>(findDevice(0x128000)))[VTableIndex];
 }
 
-std::optional<HRESULT> CRender::onPresent(const decltype(hookPresent)& hook, IDirect3DDevice9* pDevice, const RECT*, const RECT*, HWND, const RGNDATA*) {
+std::optional<HRESULT> CRender::onPresent(const decltype(hookPresent)& hook, IDirect3DDevice9* pDevice, const RECT*, const RECT*, HWND, const RGNDATA*)
+{
     static bool initialized = false;
-    if (!initialized) {
+    if (!initialized)
+    {
         ImGui::CreateContext();
 
         ImGui_ImplWin32_Init(gameHwnd);
@@ -131,14 +149,15 @@ std::optional<HRESULT> CRender::onPresent(const decltype(hookPresent)& hook, IDi
 
     ImGui::NewFrame();
 
-    if (window) {
+    if (window)
+    {
         ImGui::SetNextWindowPos(ImVec2(100.f, 100.f), ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowSize(ImVec2(300.f, 300.f), ImGuiCond_FirstUseEver);
 
         ImGui::Begin("AsiPlugin", &window);
-
-        ImGui::Text("Text");
-
+        {
+            ImGui::Text("Text");
+        }
         ImGui::End();
     }
 
@@ -150,10 +169,14 @@ std::optional<HRESULT> CRender::onPresent(const decltype(hookPresent)& hook, IDi
     return std::nullopt;
 }
 
-std::optional<HRESULT> CRender::onLost(const decltype(hookReset)& hook, IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* parameters) {
+std::optional<HRESULT> CRender::onLost(const decltype(hookReset)& hook, IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* parameters)
+{
     ImGui_ImplDX9_InvalidateDeviceObjects();
 
     return std::nullopt;
 }
 
-void CRender::onReset(const decltype(hookReset)& hook, HRESULT& returnValue, IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* parameters) {}
+void CRender::onReset(const decltype(hookReset)& hook, HRESULT& returnValue, IDirect3DDevice9* pDevice, D3DPRESENT_PARAMETERS* parameters)
+{
+
+}

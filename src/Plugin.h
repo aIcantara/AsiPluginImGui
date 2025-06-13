@@ -2,9 +2,11 @@
 #define PLUGIN_H
 
 #include "Render.h"
+
 #include <kthook/kthook.hpp>
 
-class CPlugin {
+class CPlugin
+{
 public:
     CPlugin(HMODULE hModule);
     ~CPlugin();

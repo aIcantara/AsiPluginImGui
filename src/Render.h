@@ -1,11 +1,13 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include <kthook/kthook.hpp>
 #include <imgui.h>
+#include <kthook/kthook.hpp>
+
 #include <d3d9.h>
 
-class CRender {
+class CRender
+{
 public:
     CRender();
     ~CRender();
@@ -15,7 +17,7 @@ private:
     bool window = false;
 
     void pauseScreen(bool state);
-    
+
     std::uintptr_t findDevice(std::uint32_t length);
     void* getFunctionAddress(int VTableIndex);
 

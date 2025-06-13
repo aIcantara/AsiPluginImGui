@@ -1,13 +1,16 @@
 #include "Plugin.h"
+
 #include <RakHook/rakhook.hpp>
 #include <RakNet/StringCompressor.h>
+
 #include <sampapi/CNetGame.h>
 #include <sampapi/CChat.h>
 #include <sampapi/CInput.h>
 
 namespace samp = sampapi::v037r1;
 
-CPlugin::CPlugin(HMODULE hModule) : hModule(hModule) {
+CPlugin::CPlugin(HMODULE hModule) : hModule(hModule)
+{
     using namespace std::placeholders;
 
     hookGameLoop.set_cb(std::bind(&CPlugin::gameLoop, this, _1));
@@ -17,18 +20,24 @@ CPlugin::CPlugin(HMODULE hModule) : hModule(hModule) {
     hookWndProc.install();
 }
 
-CPlugin::~CPlugin() {
+CPlugin::~CPlugin()
+{
     rakhook::destroy();
 }
 
-void CPlugin::gameLoop(const decltype(hookGameLoop)& hook) {
+void CPlugin::gameLoop(const decltype(hookGameLoop)& hook)
+{
     static bool initialized = false;
-    if (!initialized && samp::RefNetGame() && rakhook::initialize()) {
+    if (!initialized && samp::RefNetGame() && rakhook::initialize())
+    {
         StringCompressor::AddReference();
 
-        samp::RefInputBox()->AddCommand("cmd", [](const char* param) -> void {
-            samp::RefChat()->AddMessage(-1, "plugin cmd");
-        });
+        samp::RefInputBox()->AddCommand("cmd",
+            [](const char* param)
+            {
+                samp::RefChat()->AddMessage(-1, "plugin cmd");
+            }
+        );
 
         initialized = true;
     }
@@ -36,8 +45,10 @@ void CPlugin::gameLoop(const decltype(hookGameLoop)& hook) {
     return hook.get_trampoline()();
 }
 
-HRESULT CPlugin::wndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    if (uMsg == WM_KEYDOWN) {
+HRESULT CPlugin::wndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    if (uMsg == WM_KEYDOWN)
+    {
         if (wParam == VK_F9 && (HIWORD(lParam) & KF_REPEAT) != KF_REPEAT)
             render.toggleWindow();
     }
