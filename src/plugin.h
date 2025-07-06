@@ -1,7 +1,7 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
-#include "render.h"
+#include "menu/render.h"
 
 #include <kthook/kthook.hpp>
 
@@ -12,6 +12,7 @@ public:
     ~CPlugin();
 
     HMODULE hModule;
+
 private:
     CRender render;
 
@@ -19,7 +20,7 @@ private:
     void gameLoop(const decltype(hookGameLoop)& hook);
 
     kthook::kthook_simple<HRESULT(__stdcall*)(HWND, UINT, WPARAM, LPARAM)> hookWndProc{ reinterpret_cast<void*>(0x747EB0) };
-    HRESULT wndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    HRESULT onWndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
 #endif // PLUGIN_H
