@@ -1,8 +1,6 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include "menu.h"
-
 #include <imgui.h>
 
 #include <kthook/kthook.hpp>
@@ -18,8 +16,6 @@ public:
     bool toggleMenu();
 
 private:
-    CMenu menu;
-
     bool menuState = false;
 
     void pauseScreen(bool state);
