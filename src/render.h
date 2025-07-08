@@ -16,7 +16,7 @@ public:
     bool toggleMenu();
 
 private:
-    bool menuState = false;
+    bool menu = false;
 
     void pauseScreen(bool state);
 

@@ -46,11 +46,13 @@ CRender::~CRender()
 
 bool CRender::toggleMenu()
 {
-    menuState = !menuState;
-    pauseScreen(menuState);
-    ImGui::GetIO().MouseDrawCursor = menuState;
+    menu = !menu;
 
-    return menuState;
+    pauseScreen(menu);
+    
+    ImGui::GetIO().MouseDrawCursor = menu;
+
+    return menu;
 }
 
 void CRender::pauseScreen(bool state)
@@ -151,7 +153,7 @@ std::optional<HRESULT> CRender::onPresent(const decltype(hookPresent)& hook, IDi
 
     ImGui::NewFrame();
 
-    if (menuState)
+    if (menu)
     {
         ImGui::SetNextWindowPos(ImVec2(100.f, 100.f), ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowSize(ImVec2(300.f, 300.f), ImGuiCond_FirstUseEver);
