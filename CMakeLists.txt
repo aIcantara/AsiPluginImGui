@@ -17,14 +17,10 @@ add_subdirectory(third-party/plugin-sdk)
 add_subdirectory(third-party/SAMP-API)
 add_subdirectory(third-party/imgui)
 
-file(GLOB_RECURSE PROJECT_HEADERS src/*.h)
-file(GLOB_RECURSE PROJECT_SOURCE_HEADERS src/*.hpp)
-file(GLOB_RECURSE PROJECT_SOURCES src/*.cpp)
-
 add_library(${PROJECT_NAME} SHARED
-    ${PROJECT_HEADERS}
-    ${PROJECT_SOURCE_HEADERS}
-    ${PROJECT_SOURCES}
+    src/main.cpp
+    src/plugin.cpp
+    src/render.cpp
 )
 
 if (NOT "${DXSDK_DIR}" STREQUAL "")
@@ -37,15 +33,7 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    d3d9
-    d3dx9
-    kthook
-    rakhook
-    pluginsdk::gtasa
-    sampapi
-    imgui
-)
+target_link_libraries(${PROJECT_NAME} PUBLIC d3d9 d3dx9 kthook rakhook pluginsdk::gtasa sampapi imgui)
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
