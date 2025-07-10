@@ -21,6 +21,8 @@ CPlugin::CPlugin(HMODULE hModule) : hModule(hModule)
 
 CPlugin::~CPlugin()
 {
+    StringCompressor::RemoveReference();
+
     rakhook::destroy();
 }
 

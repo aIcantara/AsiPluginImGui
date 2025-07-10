@@ -1,7 +1,7 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
-#include "menu/render.h"
+#include "render.h"
 
 #include <kthook/kthook.hpp>
 
