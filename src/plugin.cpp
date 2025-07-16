@@ -15,7 +15,7 @@ CPlugin::CPlugin(HMODULE hModule) : hModule(hModule)
     hookGameLoop.set_cb(std::bind(&CPlugin::gameLoop, this, _1));
     hookGameLoop.install();
 
-    hookWndProc.set_cb(std::bind(&CPlugin::onWndProc, this, _1, _2, _3, _4, _5));
+    hookWndProc.set_cb(std::bind(&CPlugin::wndProc, this, _1, _2, _3, _4, _5));
     hookWndProc.install();
 }
 
@@ -47,7 +47,7 @@ void CPlugin::gameLoop(const decltype(hookGameLoop)& hook)
     return hook.get_trampoline()();
 }
 
-HRESULT __stdcall CPlugin::onWndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+HRESULT __stdcall CPlugin::wndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (uMsg == WM_KEYDOWN)
         if (wParam == VK_F9 && (HIWORD(lParam) & KF_REPEAT) != KF_REPEAT)

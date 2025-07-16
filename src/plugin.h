@@ -20,7 +20,7 @@ private:
     void gameLoop(const decltype(hookGameLoop)& hook);
 
     kthook::kthook_simple<HRESULT(__stdcall*)(HWND, UINT, WPARAM, LPARAM)> hookWndProc{ reinterpret_cast<void*>(0x747EB0) };
-    HRESULT __stdcall onWndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    HRESULT __stdcall wndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
 #endif // PLUGIN_H
