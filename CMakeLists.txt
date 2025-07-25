@@ -35,8 +35,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE src)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC d3d9 d3dx9 kthook rakhook pluginsdk::gtasa sampapi imgui)
 
-set_target_properties(${PROJECT_NAME}
-    PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     OUTPUT_NAME ${PROJECT_NAME}
     SUFFIX ".asi"
 )
