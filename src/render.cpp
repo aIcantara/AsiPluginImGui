@@ -5,8 +5,7 @@
 
 kthook::kthook_signal<HWND(__cdecl*)(HINSTANCE)> hookGameInstanceInit{ 0x745560 };
 
-HWND gameHwnd =
-    []()
+HWND gameHwnd = []()
     {
         HWND* hwndPtr = *reinterpret_cast<HWND**>(0xC17054);
 
