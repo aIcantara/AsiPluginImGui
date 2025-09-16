@@ -40,4 +40,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     SUFFIX ".asi"
 )
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
