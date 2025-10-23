@@ -6,16 +6,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-set(PSDK_EXAMPLES OFF)
-set(PSDK_INSTALL OFF)
-set(PSDK_GTASA ON)
-
-add_subdirectory(third-party/ktsignal)
-add_subdirectory(third-party/kthook)
-add_subdirectory(third-party/RakHook)
-add_subdirectory(third-party/plugin-sdk)
-add_subdirectory(third-party/SAMP-API)
-add_subdirectory(third-party/imgui)
+add_subdirectory(vendor/kthook)
+add_subdirectory(vendor/RakHook)
+add_subdirectory(vendor/SAMP-API)
+add_subdirectory(vendor/imgui)
 
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
@@ -33,7 +27,7 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC d3d9 d3dx9 kthook rakhook pluginsdk::gtasa sampapi imgui)
+target_link_libraries(${PROJECT_NAME} PUBLIC d3d9 d3dx9 kthook rakhook sampapi imgui)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     OUTPUT_NAME ${PROJECT_NAME}

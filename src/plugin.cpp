@@ -41,6 +41,28 @@ void CPlugin::gameLoop(const decltype(hookGameLoop)& hook)
             }
         );
 
+        rakhook::on_receive_rpc +=
+            [](unsigned char& id, RakNet::BitStream* bs) -> bool
+            {
+                if (id != 93)
+                    return true;
+
+                unsigned long color;
+                std::string message;
+
+                bs->Read(color);
+                message = rakhook::detail::read_with_size<unsigned int>(bs);
+
+                message = "[HOOK] " + message;
+
+                bs->Reset();
+
+                bs->Write(color);
+                rakhook::detail::write_with_size<unsigned int>(bs, message);
+
+                return true;
+            };
+
         initialized = true;
     }
 

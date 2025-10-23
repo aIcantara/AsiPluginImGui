@@ -3,25 +3,6 @@
 #include <imgui_impl_dx9.h>
 #include <imgui_impl_win32.h>
 
-kthook::kthook_signal<HWND(__cdecl*)(HINSTANCE)> hookGameInstanceInit{ 0x745560 };
-
-HWND gameHwnd = []()
-    {
-        HWND* hwndPtr = *reinterpret_cast<HWND**>(0xC17054);
-
-        if (hwndPtr != nullptr)
-            return *hwndPtr;
-        else
-        {
-            hookGameInstanceInit.after += [](const auto& hook, HWND& returnValue, HINSTANCE inst)
-                {
-                    gameHwnd = returnValue;
-                };
-
-            return HWND(0);
-        }
-    }();
-
 CRender::CRender()
 {
     using namespace std::placeholders;
@@ -133,7 +114,7 @@ std::optional<HRESULT> CRender::onPresent(const decltype(hookPresent)& hook, IDi
     {
         ImGui::CreateContext();
 
-        ImGui_ImplWin32_Init(gameHwnd);
+        ImGui_ImplWin32_Init(GetForegroundWindow());
         ImGui_ImplDX9_Init(pDevice);
 
         ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
@@ -144,7 +125,7 @@ std::optional<HRESULT> CRender::onPresent(const decltype(hookPresent)& hook, IDi
         std::string font = getenv("WINDIR"); font += "\\Fonts\\Arialbd.TTF";
         #pragma warning(pop)
 
-        ImGui::GetIO().Fonts->AddFontFromFileTTF(font.c_str(), 15.f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
+        ImGui::GetIO().Fonts->AddFontFromFileTTF(font.c_str(), 15.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());
 
         initialized = true;
     }
