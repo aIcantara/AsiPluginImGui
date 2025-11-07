@@ -41,28 +41,6 @@ void CPlugin::gameLoop(const decltype(hookGameLoop)& hook)
             }
         );
 
-        rakhook::on_receive_rpc +=
-            [](unsigned char& id, RakNet::BitStream* bs) -> bool
-            {
-                if (id != 93)
-                    return true;
-
-                unsigned long color;
-                std::string message;
-
-                bs->Read(color);
-                message = rakhook::detail::read_with_size<unsigned int>(bs);
-
-                message = "[HOOK] " + message;
-
-                bs->Reset();
-
-                bs->Write(color);
-                rakhook::detail::write_with_size<unsigned int>(bs, message);
-
-                return true;
-            };
-
         initialized = true;
     }
 
@@ -72,11 +50,17 @@ void CPlugin::gameLoop(const decltype(hookGameLoop)& hook)
 HRESULT __stdcall CPlugin::wndProc(const decltype(hookWndProc)& hook, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (uMsg == WM_KEYDOWN)
+    {
         if (wParam == VK_F9 && (HIWORD(lParam) & KF_REPEAT) != KF_REPEAT)
+        {
             render.toggleMenu();
+        }
+    }
 
     if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
+    {
         return 1;
+    }
 
     return hook.get_trampoline()(hWnd, uMsg, wParam, lParam);
 }

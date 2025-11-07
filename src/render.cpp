@@ -17,12 +17,12 @@ CRender::CRender()
 
 CRender::~CRender()
 {
-    if (!ImGui::GetCurrentContext())
-        return;
-
-    ImGui_ImplDX9_Shutdown();
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
+    if (ImGui::GetCurrentContext())
+    {
+        ImGui_ImplDX9_Shutdown();
+        ImGui_ImplWin32_Shutdown();
+        ImGui::DestroyContext();
+    }
 }
 
 bool CRender::toggleMenu()
@@ -70,33 +70,33 @@ void CRender::showCursor(bool state)
 std::uintptr_t CRender::findDevice(std::uint32_t length)
 {
     static std::uintptr_t base = [](std::size_t length)
+    {
+        std::string pathTo(MAX_PATH, '\0');
+
+        if (auto size = GetSystemDirectoryA(pathTo.data(), MAX_PATH))
         {
-            std::string pathTo(MAX_PATH, '\0');
+            pathTo.resize(size);
+            pathTo += "\\d3d9.dll";
 
-            if (auto size = GetSystemDirectoryA(pathTo.data(), MAX_PATH))
+            std::uintptr_t dwObjBase = reinterpret_cast<std::uintptr_t>(LoadLibraryA(pathTo.c_str()));
+
+            while (dwObjBase++ < dwObjBase + length)
             {
-                pathTo.resize(size);
-                pathTo += "\\d3d9.dll";
-
-                std::uintptr_t dwObjBase = reinterpret_cast<std::uintptr_t>(LoadLibraryA(pathTo.c_str()));
-
-                while (dwObjBase++ < dwObjBase + length)
+                if (*reinterpret_cast<std::uint16_t*>(dwObjBase + 0x00) == 0x06C7 &&
+                    *reinterpret_cast<std::uint16_t*>(dwObjBase + 0x06) == 0x8689 &&
+                    *reinterpret_cast<std::uint16_t*>(dwObjBase + 0x0C) == 0x8689)
                 {
-                    if (*reinterpret_cast<std::uint16_t*>(dwObjBase + 0x00) == 0x06C7 &&
-                        *reinterpret_cast<std::uint16_t*>(dwObjBase + 0x06) == 0x8689 &&
-                        *reinterpret_cast<std::uint16_t*>(dwObjBase + 0x0C) == 0x8689)
-                    {
-                        dwObjBase += 2;
+                    dwObjBase += 2;
 
-                        break;
-                    }
+                    break;
                 }
-
-                return dwObjBase;
             }
 
-            return std::uintptr_t(0);
-        }(length);
+            return dwObjBase;
+        }
+
+        return std::uintptr_t(0);
+    }(length);
 
     return base;
 }
