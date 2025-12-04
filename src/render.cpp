@@ -42,9 +42,9 @@ void CRender::showCursor(bool state)
 
     if (state)
     {
-        ::VirtualProtect(reinterpret_cast<void*>(0x53F3C6U), 5U, PAGE_EXECUTE_READWRITE, &updateMouseProtection);
-        ::VirtualProtect(reinterpret_cast<void*>(0x53E9F1U), 5U, PAGE_EXECUTE_READWRITE, &rsMouseSetPosProtFirst);
-        ::VirtualProtect(reinterpret_cast<void*>(0x748A1BU), 5U, PAGE_EXECUTE_READWRITE, &rsMouseSetPosProtSecond);
+        VirtualProtect(reinterpret_cast<void*>(0x53F3C6U), 5U, PAGE_EXECUTE_READWRITE, &updateMouseProtection);
+        VirtualProtect(reinterpret_cast<void*>(0x53E9F1U), 5U, PAGE_EXECUTE_READWRITE, &rsMouseSetPosProtFirst);
+        VirtualProtect(reinterpret_cast<void*>(0x748A1BU), 5U, PAGE_EXECUTE_READWRITE, &rsMouseSetPosProtSecond);
 
         *reinterpret_cast<uint8_t*>(0x53F3C6U) = 0xE9U;
         *reinterpret_cast<uint32_t*>(0x53F3C6U + 1U) = 0x15BU;
@@ -61,9 +61,9 @@ void CRender::showCursor(bool state)
         reinterpret_cast<void(__cdecl*)()>(0x541BD0U)();
         reinterpret_cast<void(__cdecl*)()>(0x541DD0U)();
 
-        ::VirtualProtect(reinterpret_cast<void*>(0x53F3C6U), 5U, updateMouseProtection, &updateMouseProtection);
-        ::VirtualProtect(reinterpret_cast<void*>(0x53E9F1U), 5U, rsMouseSetPosProtFirst, &rsMouseSetPosProtFirst);
-        ::VirtualProtect(reinterpret_cast<void*>(0x748A1BU), 5U, rsMouseSetPosProtSecond, &rsMouseSetPosProtSecond);
+        VirtualProtect(reinterpret_cast<void*>(0x53F3C6U), 5U, updateMouseProtection, &updateMouseProtection);
+        VirtualProtect(reinterpret_cast<void*>(0x53E9F1U), 5U, rsMouseSetPosProtFirst, &rsMouseSetPosProtFirst);
+        VirtualProtect(reinterpret_cast<void*>(0x748A1BU), 5U, rsMouseSetPosProtSecond, &rsMouseSetPosProtSecond);
     }
 }
 
@@ -122,7 +122,8 @@ std::optional<HRESULT> CRender::onPresent(const decltype(hookPresent)& hook, IDi
 
         #pragma warning(push)
         #pragma warning(disable: 4996)
-        std::string font = getenv("WINDIR"); font += "\\Fonts\\Arialbd.TTF";
+        std::string font = getenv("WINDIR");
+        font += "\\Fonts\\Arialbd.TTF";
         #pragma warning(pop)
 
         ImGui::GetIO().Fonts->AddFontFromFileTTF(font.c_str(), 15.0f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesCyrillic());

@@ -7,8 +7,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 add_subdirectory(vendor/kthook)
-add_subdirectory(vendor/RakHook)
-add_subdirectory(vendor/SAMP-API)
 add_subdirectory(vendor/imgui)
 
 add_library(${PROJECT_NAME} SHARED
@@ -27,7 +25,7 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC d3d9 d3dx9 kthook rakhook sampapi imgui)
+target_link_libraries(${PROJECT_NAME} PUBLIC d3d9 d3dx9 kthook imgui)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     OUTPUT_NAME ${PROJECT_NAME}

@@ -1,9 +1,9 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include <imgui.h>
-
 #include <kthook/kthook.hpp>
+
+#include <imgui.h>
 
 #include <d3d9.h>
 
